@@ -1,6 +1,8 @@
 # Bike Sharing in Boston
+@ with Ramadan Gannud  on November 12, 2018
 
-> Visualization techniques: **Calendar Heat map**, **Polar Chart**, **Radar Plot**, and **Overlapped bean plots**
+>Tool: R (ggplot2)<br/>
+Visualization techniques: **Calendar Heat map**, **Polar Chart**, **Radar Plot**, and **Overlapped bean plots**
 
 ## Introduction 
 The data used for this project is about bike sharing in Boston (2011-2012). The main objective of this analysis is to explore the reasons and elements that affect the number of bike rentals. Four different visualization techniques including calendar heat map, polar chart, radar plot, and overlapped bean plots are used to explore different aspects of data and display some interesting patterns
@@ -41,8 +43,10 @@ When we mentioned the time, the intuition of time will be a clock. This is the r
 Hour, casual, registered, and rental counts are used as time aspect for polar chart. Many data manipulation works have done for preparing for using polar chart. New columns named day, month, and year are extract by using strftime function with %e, %b, %Y, respectively, from original columns named date. To avoid data distortion, the values of casual and registered are recalculated by using square root shown in Figure.1. (bike$registered = sqrt(bike$registered), bike$casual= sqrt(bike$casual). In order to show the difference, the graph plotted by bike$registered with bike$casual is also displayed as below Figure.2. The data is melted keeping all variables in original datasets except for casual and registered users. The method is used to melt data by using melt(bike,c("instant","dteday","season",….) and then casual and registered are combined to one column, generating a new column named Value which is corresponding to the column named Variable. The new dataset named melt_hour is generated, and it is aggregated based on hr (hour) and Variable gaining the hourly mean of rental counts by using aggregate (value~ hr+ variable, melt_hour, mean). The mean is used instead of sum because the mean makes more sense for measuring people’s behavior.
 
 * Visualization <br/>
-Figure 1. (Good) <br/>  
-Figure 2. (Distortion)<br/>
+Figure1.(Good) <br/> 
+<img width="706" alt="screen shot 2018-11-27 at 3 47 05 pm" src="https://user-images.githubusercontent.com/31257555/49113777-00416980-f25c-11e8-8d0e-6c6000de7d16.png"><br/>
+Figure2.(Distortion)<br/>
+<img width="677" alt="screen shot 2018-11-27 at 3 47 41 pm" src="https://user-images.githubusercontent.com/31257555/49113781-05061d80-f25c-11e8-8360-dc4204a1c689.png"><br/>
 The bolded title is about the topic of Rental Count vs Hour for different User Type. X-axis stands for time of day which is changed to be a circle, Y axis stands for the average rental counts. The green color stands for casual users and orange stands for registered users by looking at the legend on the right of graph.The geom_bar() and coord_polar(position = "stack") are used to generate polar chart. The data used is aggregated by hour. X-axis is hr(hour), the Y-axis is the variable named new which created by changing the value of average rent count to be negative if the users are casual users. The effect you can see this adjustment is the casual users marked in green are inside of the small circle, while the registered users marked in orange are outside of the small circle. The colors are selected by using Color Brewer and tested for multiple time to achieve the best display. The green means that casual users are potential registered uses conveying the prospect meaning. The orange color is a good matched with green and make comparison easier. The colors of bars are set by using scale_fill_manual(values=c("#66c2a4","#fdbb84")). The label of X is relabeled by using time instead of number.
 
 * Results and Findings
@@ -62,10 +66,12 @@ For each radar plot, a new dataset is created from the original one where all un
 A summarized data set of each one was created by calculating the average rentals for each different pair of the aspect and the weather type using the ddply function. To implement the code for these radar plots, we had to change the shape of how these data sets looked like after all. cast( ) function was used so that the main aspect column’s records can become columns. For example, in the temperature aspect dataset, columns become (hot, warm, mild, cold, very cold, and weather type) and the average rentals become our records. Then, is.na( ) function was used to replace all the non-available records by 0. The weather type column with (1, 2, 3) records was removed and replaced to be recognized by the rows’ names. These rows’ names were changed to ("Clear or Cloudy", "Mist", "Light Rain or Snow"). Then, two records were added as the first and second record to the three datasets of the three aspects. The first row is the largest number of average rentals within all aspects only 5952.348 for all intervals and the second row is all zeros. Now, we have 5 columns (intervals) and 5 rows (records) for each weather aspect. 
 
 * Visualization<br/>
+<img width="1119" alt="screen shot 2018-11-27 at 3 48 05 pm" src="https://user-images.githubusercontent.com/31257555/49113796-0afbfe80-f25c-11e8-8e9c-9ceaa36b32f2.png"><br/>
 The techniques were used in this graph combine three different weather types with three different weather aspects. Radar plot and colors together create a rich and deep display of how weather affected rentals by looking at different weather variables at a time. Also, radar plots are easy to put together in one graph because of their shape and round plot. 
 The colors were chosen by using the web so colors can give a clear visualization when they overlap. For borders, rgb(0.2,0.5,0.5,0.9), rgb(0.8,0.2,0.5,0.9) , and rgb(0.7,0.5,0.1,0.9) were used. For fill in colors, rgb(0.2,0.5,0.5,0.4), rgb(0.8,0.2,0.5,0.4), rgb(0.7,0.5,0.1,0.4) were used. 
-The organization of each radar plot intervals was based on the numerical order of each plot except for the temperature graph. In temperature, regular order was used but then we realized that it’s better to emphasize the difference between hot, cold, and very cold temperature so the steep difference can be more obvious to audience by changing the order of temperature levels. I used photoshop to combine the radar plots in one graph and adjusted all of them to have the same size. The scale we used was based on minimum and maximum rentals of all aspects. 
- 
+The organization of each radar plot intervals was based on the numerical order of each plot except for the temperature graph. In temperature, regular order was used but then we realized that it’s better to emphasize the difference between hot, cold, and very cold temperature so the steep difference can be more obvious to audience by changing the order of temperature levels. I used photoshop to combine the radar plots in one graph and adjusted all of them to have the same size. The scale we used was based on minimum and maximum rentals of all aspects.<br/> 
+<img width="1016" alt="screen shot 2018-11-27 at 3 48 17 pm" src="https://user-images.githubusercontent.com/31257555/49113799-0e8f8580-f25c-11e8-8d70-33b96fd079b3.png"><br/>
+
 * Results and Findings<br/>
   * When the weather is clear, users rent bikes the most especially when the temperature is hot or warm.
   * When humidity is 40 % or above and the weather is clear, users tend to rent more bikes.
@@ -81,6 +87,7 @@ Bike rentals in different seasons can have different behavioral changes especial
 In this graph, we used the daily basis dataset. A new dataset was created by removing all unwanted columns and melting different user types in one column. Also, seasons have been changed from numerical values to season names so do the years values. Our new dataset will have year, season, user type, and rental counts columns. The Y axis will represent the rental counts and X axis will represent different seasons. Each season will have two overlapped bean plots. The first bean plot is for casual users’ rentals in 2011 and 2012. The second overlapped bean plot is for registered users’ rentals in 2011 and 2012. geom_split_violin function was used to split these violins. Furthermore, color in aesthetics of ggplot was used to distinguish between different years. On the other hand, fill in aesthetics of ggplot was used to distinguish between different user types.
 
 * Visualization<br/>
+<img width="1028" alt="screen shot 2018-11-27 at 3 48 30 pm" src="https://user-images.githubusercontent.com/31257555/49113802-10f1df80-f25c-11e8-9cbb-9a96bf0c64bf.png"><br/> 
 The techniques used in this graph combine 4 different aspects to be in one graph. This shows a deep and rich display of the data so the comparison can be wider and variate. It gives a clear visualization on how the distribution of rental behavior has changes over different seasons as well as over different years for different user types. Colors were chosen after many attempts of many different choices since every color has to reflect with the other three colors. For borders, 3182bd and rgb(0.8,0.2,0.5,0.9) were used. For fill in colors, #fff7bc and rgb(0.2,0.5,0.5,0.9) were used. Also, we tried to use different scales such as logarithmic scale but they distorted the data. The problem we encountered is how to plot the mean of each curve in the appropriate place of x value since we have 16 means, which we managed at the end by adjusting the size of the mean line and its position until we determined the most adequate visualization. 
 
 * Results and Findings
@@ -106,3 +113,14 @@ In conclusion, these graphs have told us so much about how rentals were driven i
 * To see if different user types behave differently in weekends and holidays.
 * To see how working days can affect rentals in terms of weather changes especially for registered users.
 
+## References
+*	http://stat545.com/block019_enforce-color-scheme.html
+*	https://www.r-graph-gallery.com/299-circular-stacked-barplot/
+*	https://plot.ly/r/
+*	https://rpubs.com/cardiomoon/179757
+*	https://rstudio-pubs-static.s3.amazonaws.com/284981_2e1c4c62b74446008d7ca449b744f7ab.html
+*	https://stackoverflow.com/questions/15014595/how-to-use-black-and-white-fill-patterns-instead-of-color-coding-on-calendar-hea
+*	https://gist.github.com/agstudy/5024781
+*	http://www.sthda.com/english/wiki/ggplot2-themes-and-background-colors-the-3-elements#theme_wsj-theme-based-on-plots-in-the-wall-street-journal
+*	http://minato.sip21c.org/msb/man/radarchart.html
+*	https://stackoverflow.com/questions/47593002/split-violin-plot-with-3-groups
